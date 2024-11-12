@@ -1,66 +1,55 @@
-#Author: your.email@your.domain.com
-#Keywords Summary :
-#Feature: List of scenarios.
-#Scenario: Business rule through list of steps with arguments.
-#Given: Some precondition step
-#When: Some key actions
-#Then: To observe outcomes or validation
-#And,But: To enumerate more Given,When,Then steps
-#Scenario Outline: List of steps for data-driven as an Examples and <placeholder>
-#Examples: Container for s table
-#Background: List of steps run before each of the scenarios
-#""" (Doc Strings)
-#| (Data Tables)
-#@ (Tags/Labels):To group Scenarios
-#<> (placeholder)
-#""
-## (Comments)
-#Sample Feature Definition Template
+@HappyPath
+Feature: Happy Path of Shopping and Checkout Process
 
- Feature: Shopping and Checkout Process
+  # Background steps are optional but useful if there are steps common to all scenarios.
+  Background: 
+    Given I launch the browser and open the homepage
 
-  Scenario: Add two items to the cart and complete checkout
+  # Scenario Outline for adding items to the cart
+  Scenario Outline: Add items to the cart
+    When I click on "<item>"
+    And I add "<item>" of size "<size>" and quantity "<quantity>" to the cart
 
-    # Step 1: Add Men's Outerwear to cart
-    Given I am on the homepage
-    When I add "Men’s Outerwear" of size "XL" and quantity "2" to the cart
-    Then I should see "Men’s Outerwear" added to the cart with size "XL" and quantity "2"
+    Examples: 
+      | item             | size | quantity |
+      | Men’s Outerwear  | XL   |        2 |
+      | Ladies Outerwear | XS   |        3 |
 
-    # Step 2: Confirm item in cart
+  Scenario: View cart and verify items
     When I view the cart
-    Then I should see "Men’s Outerwear" in the cart with the correct details
-
-    # Step 3: Navigate back to shop
-    When I click on Shop to return to the homepage
-
-    # Step 4: Add Ladies' Outerwear to cart
-    And I add "Ladies' Outerwear" of size "XS" and quantity "3" to the cart
-    Then I should see "Ladies' Outerwear" added to the cart with size "XS" and quantity "3"
-
-    # Step 5: Confirm item in cart
-    When I view the cart
-    Then I should see "Ladies' Outerwear" in the cart with the correct details
-
-    # Step 6: Verify items in cart before checkout
-    Given I view the basket
-    Then I confirm the items in the cart have the correct sizes and quantities
+    Then I should see all items added to the cart with correct details and correct price
+      | item             | size | quantity |
+      | Men’s Outerwear  | XL   |        2 |
+      | Ladies Outerwear | XS   |        3 |
     And the total price is calculated correctly
 
-    # Step 7: Update quantity for Ladies' Outerwear
-    When I change the quantity of "Ladies' Outerwear" to "1"
+  # Scenario to change quantity of an item in the cart
+  Scenario: Update quantity for Ladies Outerwear
+    When I change the quantity of "Ladies Outerwear" to "1"
     Then the cart should update the total price correctly
+    
+    
+# Scenario for the checkout process using data from Excel
+  Scenario: Complete checkout with data from Excel
+  When I proceed to the checkout page
+  And I complete the checkout with the following account information from excel:
+    | Email  | <Email>          |
+    | Phone  | <Phone>          |
+  And I complete the checkout with the following shipping address from excel:
+    | Address | <Address>    |
+    | City    | <City>       |
+    | State   | <State>      |
+    | Zip     | <Zip>        |
+    | Country | <Country>    |
+  And I complete the checkout with the following payment method from excel:
+    | Cardholder Name  | <Cardholder Name> |
+    | Card Number      | <Card Number>     |
+    | Expiry           | <Expiry>     |
+    | CVV              | <CVV>             |
 
-    # Step 8: Proceed to checkout
-    Given I proceed to the checkout page
-
-    # Step 9: Enter account, shipping, and payment details from Excel
-    When I enter account information from the Excel sheet
-    And I enter shipping address details from the Excel sheet
-    And I enter payment method details from the Excel sheet
-
-    # Step 10: Place the order
-    And I place the order
-
-    # Step 11: Confirm order and finish
-    Then I should see a confirmation message saying "Thank you for your order"
+ # Final confirmation of order placement
+  Scenario: Place order and confirm
+    When I place the order
+    Then I should see a confirmation message saying "Thank you"
     And I click on Finish to complete the process
+      

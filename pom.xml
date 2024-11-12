@@ -12,16 +12,7 @@
         <version>4.0.0</version>
     </dependency>
     <!-- Cucumber -->
-    <dependency>
-        <groupId>io.cucumber</groupId>
-        <artifactId>cucumber-java</artifactId>
-        <version>6.10.4</version>
-    </dependency>
-    <dependency>
-        <groupId>io.cucumber</groupId>
-        <artifactId>cucumber-spring</artifactId>
-        <version>6.10.4</version>
-    </dependency>
+    
     <!-- Apache POI for Excel reading -->
     <dependency>
         <groupId>org.apache.poi</groupId>
@@ -39,11 +30,7 @@
     <artifactId>cucumber-java</artifactId>
     <version>6.10.4</version> <!-- or the latest version -->
 </dependency>
-<dependency>
-    <groupId>io.cucumber</groupId>
-    <artifactId>cucumber-spring</artifactId>
-    <version>6.10.4</version>
-</dependency>
+  
 <dependency>
     <groupId>io.cucumber</groupId>
     <artifactId>cucumber-testng</artifactId>
@@ -60,6 +47,12 @@
         <version>5.3.0</version> <!-- Ensure you are using the latest version -->
     </dependency>
 
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.24</version> <!-- Ensure you are using the latest Lombok version -->
+    <scope>provided</scope>
+</dependency>
 
 </dependencies>
   <build>

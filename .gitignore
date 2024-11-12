@@ -1,12 +1,13 @@
 # Ignore Java build directories
-/target/
-/build/
+target/
+build/
 
 # Ignore IDE project files
 .idea/
 .vscode/
 .classpath
 .project
+.settings
 
 # Ignore OS-specific files
 .DS_Store
