@@ -72,10 +72,8 @@ public class ShoppingSteps {
 
 	@And("I add {string} of size {string} and quantity {string} to the cart")
 	public void i_add_item_to_cart(String item, String size, String quantity) {
-		// Log the expected item, size, and quantity
 		scenario.log("Adding item to cart: " + item + ", Size: " + size + ", Quantity: " + quantity);
 
-		// Store the item details in a map
 		Map<String, String> itemDetails = new HashMap<>();
 		itemDetails.put("size", size);
 		itemDetails.put("quantity", quantity);
@@ -153,7 +151,6 @@ public class ShoppingSteps {
 				scenario.log("Actual values: Item: " + actualmenItemName + ", Size: " + actualmenItemSize
 						+ ", Quantity: " + actualmenItemQuantity);
 
-				// Assertions
 				Assert.assertTrue(actualmenItemName.toLowerCase().contains("men"),
 						"Men's item name doesn't match the expected name!");
 				Assert.assertEquals(actualmenItemSize, expectedItemSize, "Men's item size doesn't match!");
@@ -164,7 +161,6 @@ public class ShoppingSteps {
 				scenario.log("Actual values: Item: " + actualwomenItemName + ", Size: " + actualwomenItemSize
 						+ ", Quantity: " + actualwomenItemQuantity);
 
-				// Assertions
 				Assert.assertTrue(actualwomenItemName.toLowerCase().contains("ladies"),
 						"Women's item name doesn't match the expected name!");
 				Assert.assertEquals(actualwomenItemSize, expectedItemSize, "Women's item size doesn't match!");
@@ -180,23 +176,19 @@ public class ShoppingSteps {
 		String expectedTotalPrice = cartPage.calculateTotalPrice();
 		String actualCartSubtotal = cartPage.getSubtotalFromUI();
 
-		// Log expected and actual values
 		scenario.log("Expected Total Price: " + expectedTotalPrice);
 		scenario.log("Actual Cart Subtotal: " + actualCartSubtotal);
 
 		System.out.println("Total Price: " + expectedTotalPrice);
 		System.out.println("Cart Subtotal: " + actualCartSubtotal);
 
-		// Assert values and include them in the log
 		Assert.assertEquals(expectedTotalPrice, actualCartSubtotal,
 				"After calculating the prices for products, they don't match");
 	}
 
 	@When("I change the quantity of {string} to {string}")
 	public void i_change_the_quantity_of_to(String item, String quantity) {
-		// Assuming you are only dealing with "Ladies Outerwear" for now
 		if (item.equalsIgnoreCase("Ladies Outerwear")) {
-			// Convert quantity to integer
 			int quantityInt = Integer.parseInt(quantity);
 
 			// Set the quantity using the CartPage method
@@ -221,18 +213,15 @@ public class ShoppingSteps {
 
 	@Then("the cart should update the total price correctly")
 	public void the_cart_should_update_the_total_price_correctly() {
-		// Fetch the updated item prices and quantities
 		String expectedTotalPrice = cartPage.calculateTotalPrice();
 		String actualCartSubtotal = cartPage.getSubtotalFromUI();
 
-		// Log expected and actual values for price comparison
 		scenario.log("Expected Total Price after update: " + expectedTotalPrice);
 		scenario.log("Actual Cart Subtotal after update: " + actualCartSubtotal);
 
 		System.out.println("Total Price: " + expectedTotalPrice);
 		System.out.println("Cart Subtotal: " + actualCartSubtotal);
 
-		// Assert that the prices match
 		Assert.assertEquals(expectedTotalPrice, actualCartSubtotal,
 				"After calculating the prices for products, they don't match");
 	}
@@ -347,7 +336,6 @@ public class ShoppingSteps {
 
 	@And("I click on Finish to complete the process")
 	public void i_click_on_finish_to_complete_the_process() {
-		// Log the action of clicking the Finish button
 		scenario.log("Clicking on Finish to complete the order process...");
 
 		try {

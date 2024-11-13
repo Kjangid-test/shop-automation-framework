@@ -67,11 +67,7 @@ public class SeleniumUtils {
 	/**
 	 * This method clicks on an element inside a shadow DOM.
 	 *
-	 * @param driver                         WebDriver instance.
-	 * @param shadowHostForMensAndWomensWear CSS selector of the shadow host
-	 *                                       element.
-	 * @param elementXPath                   XPath of the element inside the shadow
-	 *                                       DOM.
+	
 	 */
 	public static void clickElementInShadowDOM(WebElement ele, String elementXPath) {
 		WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(10));
