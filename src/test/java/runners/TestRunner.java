@@ -1,57 +1,68 @@
 package runners;
+import io.cucumber.java.Before;
+import io.cucumber.java.After;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 
 import drivers.DriverFactory;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 import utils.ConfigReader;
 import utils.SeleniumUtils;
 
-import org.testng.annotations.*;
-
 @CucumberOptions(
     features = "src/test/resources/feature",
-    glue = {"stepdefs", "hooks"},  // Ensure the glue path matches the correct package
-    plugin = {"pretty", "html:target/reports/cucumber.html"},
+    glue = {"stepdefs", "hooks"}, 
+    		 plugin = {
+    			        "pretty",
+    			        "html:target/cucumber-reports/cucumber-pretty.html",
+    			        "json:target/cucumber-reports/CucumberTestReport.json",
+    			    },    			      
+
+    		 
     tags = "@HappyPath"
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
-	@BeforeSuite
-	public void beforeSuite() {
-	    System.out.println("Starting the test suite.");
-	     // Initialize the driver if it wasn't already created
-	    
-	}
+    
+    private Scenario scenario;
 
-	@BeforeClass
-	public void beforeClass() {
-		    if (DriverFactory.getDriver() == null) {
-		        System.out.println("Initializing WebDriver...");
-		        DriverFactory.getDriver();  // Initialize the driver if it wasn't already created
-		    }
-		    
-		    if (DriverFactory.getDriver() != null) {
-		        System.out.println("Navigating to URL...");
-		        SeleniumUtils.getTheUrl(ConfigReader.getProperty("BASEURL"));  // Use ConfigReader to fetch the URL
-		    } else {
-		        throw new IllegalStateException("WebDriver was not initialized correctly.");
-		    }
-		}
-
-    @BeforeMethod
-    public void beforeMethod() {
-        System.out.println("Starting a new test.");
-
+    @BeforeSuite
+    public void beforeSuite() {
+        System.out.println("Starting the test suite.");
     }
+
+    @BeforeClass
+    public void beforeClass() {
+        if (DriverFactory.getDriver() == null) {
+            System.out.println("Initializing WebDriver...");
+            DriverFactory.getDriver();
+        }
+
+        if (DriverFactory.getDriver() != null) {
+            System.out.println("Navigating to URL...");
+            SeleniumUtils.getTheUrl(ConfigReader.getProperty("BASEURL"));
+        } else {
+            throw new IllegalStateException("WebDriver was not initialized correctly.");
+        }
+    }
+
+    // Use Cucumber's @Before for scenario-level setup
     @Before
-    public void beforeScenario(Scenario scenario) {
+    public void setUpScenario(Scenario scenario) {
+        this.scenario = scenario;
         System.out.println("Starting scenario: " + scenario.getName());
     }
 
+    // Use Cucumber's @After for scenario-level teardown
     @After
-    public void afterScenario(Scenario scenario) {
+    public void tearDownScenario() {
         if (scenario.isFailed()) {
             System.out.println("Scenario failed: " + scenario.getName());
         } else {
@@ -59,31 +70,13 @@ public class TestRunner extends AbstractTestNGCucumberTests {
         }
     }
 
-    @Test
-    public void runCucumberTests() {
-        // This runs all the tests defined in CucumberOptions
-        // AbstractTestNGCucumberTests takes care of running the scenarios
-    }
-
-    @AfterMethod
-    public void afterMethod() {
-    	
-       
-
-        // Any cleanup after each scenario (test method)
-        System.out.println("Test completed.");
-    }
-
     @AfterClass
     public void afterClass() {
-        // Clean up after all tests in this class are complete
         DriverFactory.quitDriver();
     }
 
     @AfterSuite
     public void afterSuite() {
-        // Global cleanup after all tests are complete
-        DriverFactory.quitDriver();
         System.out.println("Test suite completed.");
     }
 }

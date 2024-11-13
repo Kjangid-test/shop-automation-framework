@@ -2,6 +2,8 @@ package utils;
 
 import drivers.DriverFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
@@ -14,7 +16,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SeleniumUtils {
 
-	private static WebDriverWait wait;
+	private WebDriverWait wait;
 
 	public SeleniumUtils() {
 
@@ -27,13 +29,39 @@ public class SeleniumUtils {
 	}
 
 	public static void getTheUrl(String url) {
+        // Check if the URL is not null and not empty
+        if (url == null || url.trim().isEmpty()) {
+            System.err.println("Invalid URL: URL is null or empty.");
+            return;
+        }
 
-		DriverFactory.getDriver().get(url);
-	}
+        try {
+            new URL(url); // Throws MalformedURLException if URL is not valid
+        } catch (MalformedURLException e) {
+            System.err.println("Invalid URL format: " + url);
+            return;
+        }
 
-	// Wait for an element to be visible
+        // Check if the driver is already on the same URL
+        String currentUrl = DriverFactory.getDriver().getCurrentUrl();
+        if (url.equals(currentUrl)) {
+            System.out.println("Already on the desired URL: " + url);
+            return;
+        }
+
+        // Navigate to the URL if all checks pass
+        DriverFactory.getDriver().get(url);
+        System.out.println("Navigated to URL: " + url);
+    }
+
+
 	public static void waitForElementToBeVisible(By locator) {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+		try {
+			DriverFactory.getWait().until(ExpectedConditions.visibilityOfElementLocated(locator));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -46,48 +74,37 @@ public class SeleniumUtils {
 	 *                                       DOM.
 	 */
 	public static void clickElementInShadowDOM(WebElement ele, String elementXPath) {
-		// Wait for the shadow host element to be visible
 		WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(10));
 		WebElement shadowHost = wait.until(ExpectedConditions.visibilityOf(ele));
 
-		// Retrieve the shadow root from the shadow host
 		SearchContext shadowRoot = shadowHost.getShadowRoot();
 
-		// Wait for the element inside the shadow DOM to be clickable
 		WebElement elementToClick = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(10))
 				.until(ExpectedConditions.elementToBeClickable(shadowRoot.findElement(By.cssSelector(elementXPath))));
 
-		// Click the element inside the shadow DOM
 		elementToClick.click();
 	}
 	
 	
 	
 	 public static void clickElementInNestedShadowDOM(WebElement shadowHost, String[] elementCSSSelectors) {
-	        // Wait for the shadow host element to be visible
 	        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(15));
 	        WebElement shadowElement = wait.until(ExpectedConditions.visibilityOf(shadowHost));
 
-	        // Get the shadow root of the initial shadow host
 	        SearchContext shadowRoot = shadowElement.getShadowRoot();
 
-	        // Loop through each CSS selector and traverse through shadow roots
 	        for (int i = 0; i < elementCSSSelectors.length - 1; i++) {
-	            // Find the next shadow host or element within the shadow root
 	            WebElement nextElement = shadowRoot.findElement(By.cssSelector(elementCSSSelectors[i]));
 
-	            // Only get the shadow root if the next element is a shadow host
 	            if (isShadowHost(nextElement)) {
-	                shadowRoot = nextElement.getShadowRoot();  // Retrieve the shadow root of the next level
+	                shadowRoot = nextElement.getShadowRoot();  
 	            } else {
-	                shadowRoot = nextElement;  // Otherwise, just set it to the found element
+	                shadowRoot = nextElement; 
 	            }
 	        }
 
-	        // After navigating through all shadow DOMs, find the final element to click
 	        WebElement elementToClick = shadowRoot.findElement(By.cssSelector(elementCSSSelectors[elementCSSSelectors.length - 1]));
 
-	        // Wait until the element is clickable and then click
 	        new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(10))
 	                .until(ExpectedConditions.elementToBeClickable(elementToClick));
 	        elementToClick.click();
@@ -101,15 +118,11 @@ public class SeleniumUtils {
 		    WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(15));
 		    WebElement shadowElement = wait.until(ExpectedConditions.visibilityOf(shadowHost));
 
-		    // Get the shadow root of the initial shadow host
 		    SearchContext shadowRoot = shadowElement.getShadowRoot();
 
-		    // Loop through each CSS selector and traverse through shadow roots
 		    for (int i = 0; i < elementCSSSelectors.length - 1; i++) {
-		        // Find the next shadow host or element within the shadow root
 		        WebElement nextElement = shadowRoot.findElement(By.cssSelector(elementCSSSelectors[i]));
 
-		        // Only get the shadow root if the next element is a shadow host
 		        if (isShadowHost(nextElement)) {
 		            shadowRoot = nextElement.getShadowRoot();  // Retrieve the shadow root of the next level
 		        } else {
@@ -117,17 +130,14 @@ public class SeleniumUtils {
 		        }
 		    }
 
-		    // After navigating through all shadow DOMs, find the final element
 		    return shadowRoot.findElement(By.cssSelector(elementCSSSelectors[elementCSSSelectors.length - 1]));
 		}
 
 	
 	 public static void sendKeysInNestedShadowDOM(WebElement shadowHost, String[] elementCSSSelectors, String keysToSend) {
-		    // Wait for the shadow host element to be visible
 		    WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(15));
 		    WebElement shadowElement = wait.until(ExpectedConditions.visibilityOf(shadowHost));
 
-		    // Get the shadow root of the initial shadow host
 		    SearchContext shadowRoot = shadowElement.getShadowRoot();
 
 		    // Loop through each CSS selector and traverse through shadow roots
@@ -143,33 +153,49 @@ public class SeleniumUtils {
 		        }
 		    }
 
-		    // After navigating through all shadow DOMs, find the final element to send keys
 		    WebElement elementToSendKeys = shadowRoot.findElement(By.cssSelector(elementCSSSelectors[elementCSSSelectors.length - 1]));
 
-		    // Wait until the element is clickable and then send the keys
 		    new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(10))
 		            .until(ExpectedConditions.elementToBeClickable(elementToSendKeys));
 
-		    // Clear the field first (if necessary) and then send the keys
 		    elementToSendKeys.clear();
 		    System.out.println("This is the key to enter :" +keysToSend);
 		    elementToSendKeys.sendKeys(keysToSend);
 		}
 
 	 
-	    // Helper method to check if an element is a shadow host
 	    private static boolean isShadowHost(WebElement element) {
 	        try {
 	            element.getShadowRoot();
-	            return true;  // It is a shadow host
+	            return true;  
 	        } catch (Exception e) {
-	            return false;  // It is not a shadow host
+	            return false;  
 	        }
 	    }
-	// Take a screenshot (You can expand this method as needed)
 	    public static void selectDropdownValue(WebElement dropdownElement, String value) {
-	        Select select = new Select(dropdownElement);
-	        select.selectByVisibleText(value);  // You can modify this to select by index or value if needed
+	        try {
+	            new Select(dropdownElement).selectByVisibleText(value);
+	        } catch (Exception e) {
+	            System.err.println("Error selecting dropdown value: " + value);
+	            e.printStackTrace();
+	        }
 	    }
 
+	    public static void scrollUp(int pixels) {
+	        try {
+	            JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver();
+	            js.executeScript("window.scrollBy(0, -" + pixels + ")");
+	        } catch (Exception e) {
+	            System.err.println("Error scrolling up by " + pixels + " pixels.");
+	            e.printStackTrace();
+	        }
+	    }
+	    public static boolean isCorrectPageTitle( String expectedTitle) {
+	        // Get the current page title
+	        String actualTitle = DriverFactory.getDriver().getTitle();
+	        System.out.println("Actual Title: " + actualTitle);
+	        System.out.println("Expected Title: " + expectedTitle);
+
+	        return actualTitle.equals(expectedTitle);
+	    }
 }

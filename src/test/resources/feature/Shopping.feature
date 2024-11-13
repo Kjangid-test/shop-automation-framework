@@ -3,12 +3,14 @@ Feature: Happy Path of Shopping and Checkout Process
 
   # Background steps are optional but useful if there are steps common to all scenarios.
   Background: 
-    Given I launch the browser and open the homepage
+    Given I launch the browser and open the homepage "Home - SHOP"
 
   # Scenario Outline for adding items to the cart
   Scenario Outline: Add items to the cart
     When I click on "<item>"
     And I add "<item>" of size "<size>" and quantity "<quantity>" to the cart
+    And I view cart to check item is added successfully
+    And I click on Shop to navigate to home page
 
     Examples: 
       | item             | size | quantity |
@@ -33,19 +35,19 @@ Feature: Happy Path of Shopping and Checkout Process
   Scenario: Complete checkout with data from Excel
   When I proceed to the checkout page
   And I complete the checkout with the following account information from excel:
-    | Email  | <Email>          |
-    | Phone  | <Phone>          |
+    | Email  |
+    | Phone  |
   And I complete the checkout with the following shipping address from excel:
-    | Address | <Address>    |
-    | City    | <City>       |
-    | State   | <State>      |
-    | Zip     | <Zip>        |
-    | Country | <Country>    |
+    | Address |
+    | City    |
+    | State   |
+    | Zip     |
+    | Country |
   And I complete the checkout with the following payment method from excel:
-    | Cardholder Name  | <Cardholder Name> |
-    | Card Number      | <Card Number>     |
-    | Expiry           | <Expiry>     |
-    | CVV              | <CVV>             |
+    | Cardholder Name  |
+    | Card Number      | 
+    | Expiry           | 
+    | CVV              |
 
  # Final confirmation of order placement
   Scenario: Place order and confirm

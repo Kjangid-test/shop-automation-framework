@@ -29,6 +29,7 @@ public class OrderConfirmationPage {
 
 
 	public String getOrderConfirmationThankYouDescription() {
+		SeleniumUtils.scrollUp(500);
 		 WebElement productSizeElement = SeleniumUtils.getElementInNestedShadowDOM(shadowHostMainElement, orderConfirmationThankYouDescription);
 	        return productSizeElement.getText().trim();	}
 
@@ -46,8 +47,8 @@ public class OrderConfirmationPage {
 
 
 	
-	String[] orderConfirmationThankYou = {"iron-pages > shop-cart","div > div:nth-child(2) > div.checkout-box > shop-button > a"};
-    String[] orderConfirmationThankYouDescription = {" #pages > header.iron-selected > a"};
+	String[] orderConfirmationThankYou = {"iron-pages > shop-checkout","#pages > header.iron-selected > h1"};
+    String[] orderConfirmationThankYouDescription = {"iron-pages > shop-checkout", "#pages > header.iron-selected > p"};
     String[] orderConfirmationFinishbutton = {"iron-pages > shop-checkout","#pages > header.iron-selected > shop-button > a"};
     String[] orderConfirmationPlaceOrderbutton ={"iron-pages > shop-checkout","#submitBox > input[type=button]"};
     

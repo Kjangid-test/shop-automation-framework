@@ -17,17 +17,15 @@ public class CheckoutPage {
 		PageFactory.initElements(DriverFactory.getDriver(), this); // Initialize elements only once
 	}
 
-	String[] checkOutPage = { "iron-pages > shop-cart", "div > div:nth-child(2) > div.checkout-box > shop-button > a" };
+	private String[] checkOutPage = { "iron-pages > shop-cart", "div > div:nth-child(2) > div.checkout-box > shop-button > a" };
 	@FindBy(css = "body > shop-app")
 	private WebElement shadowHostMainElement;
 
-	// Locator arrays (same as before, but not needed for dynamic interaction)
-	// Use dynamic approach to access elements based on field name
 
 	public void getCheckOutbutton() {
 
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,16 +44,13 @@ public class CheckoutPage {
 	public void setFieldFromSelectField(String field , String optionValue) {
 		WebElement element = SeleniumUtils.getElementInNestedShadowDOM(shadowHostMainElement, getFieldLocator(field));
 
-		// Find the dropdown options (list of options)
 		List<WebElement> Options = element.findElements(By.cssSelector("option"));
 
-		// Log the quantity options available for debugging
 		System.out.println("Available options: ");
 		for (WebElement option : Options) {
 			System.out.println(option.getText().trim());
 		}
 
-		// Loop through the options and select the one that matches the given country
 		for (WebElement option : Options) {
 			String optionText = option.getText().trim();
 			if (optionText.equals(optionValue)) {

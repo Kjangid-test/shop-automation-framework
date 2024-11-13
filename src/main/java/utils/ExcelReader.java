@@ -54,12 +54,7 @@ public class ExcelReader {
                                         value =  decimalFormat.format(cell.getNumericCellValue());
                                       }
                                 	
-										/*
-										 * // Handle numbers, but convert to string value =
-										 * String.valueOf(cell.getNumericCellValue()); // Remove any scientific notation
-										 * if it's a large number (e.g., credit card number) if (value.contains("E")) {
-										 * value = String.format("%.0f", cell.getNumericCellValue()); }
-										 */
+										
                                     break;
                                 case BOOLEAN:
                                     value = String.valueOf(cell.getBooleanCellValue());
@@ -86,7 +81,6 @@ public class ExcelReader {
 
 
     public static void main(String[] args) {
-        // Test the method with the file path
-        readCheckoutData("src/test/resources/DataSheet.xlsx");
+        readCheckoutData(ConfigReader.getCheckoutDataFilePath());
     }
 }
